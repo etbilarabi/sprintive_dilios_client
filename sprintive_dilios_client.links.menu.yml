@@ -1,0 +1,6 @@
+sprintive_dilios_client.settings:
+  title: "Configure Dilios"
+  route_name: sprintive_dilios_client.settings
+  description: "Configuration for dilios module"
+  parent: system.admin_config_system
+  weight: 100

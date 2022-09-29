@@ -1,0 +1,49 @@
+<?php
+
+use Drupal\sprintive_dilios_client\Logger\DiliosLogger;
+
+/**
+ * Implements hook_schema().
+ */
+
+function sprintive_dilios_client_schema() {
+  $schema['dilios_log_messages'] = [
+    'description' => 'This table stores messages temporarily untill the next cron to send them all in one request.',
+    'fields' => [
+      'id' => [
+        'description' => 'The id of this record',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'data' => [
+        'description' => 'The message of the record.',
+        'type' => 'blob',
+        'serialize' => TRUE,
+        'not null' => TRUE,
+      ],
+    ],
+    'primary key' => ['id'],
+  ];
+
+  return $schema;
+}
+
+/**
+ * Implements hook_cron().
+ */
+
+function sprintive_dilios_client_cron() {
+  $database = \Drupal::database();
+  $results = $database->select('dilios_log_messages', 'D')->fields('D', ['id', 'data'])->range(0, 100)->execute()->fetchAllAssoc('id', PDO::FETCH_ASSOC);
+  $data_to_send = [];
+  foreach ($results as $row) {
+    $data = unserialize($row['data']);
+    $data_to_send[] = $data;
+  }
+
+  if (!empty($data_to_send)) {
+    DiliosLogger::sendLogs($data_to_send);
+    // Delete the messages
+    $database->delete('dilios_log_messages')->condition('id', array_keys($results), 'IN')->execute();
+  }
+}

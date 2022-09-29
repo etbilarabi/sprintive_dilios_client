@@ -1,0 +1,77 @@
+services:
+  sprintive_dilios_client.entity_manager:
+    class: Drupal\sprintive_dilios_client\DiliosEntityManager
+    arguments:
+      [
+        "@entity_type.manager",
+        "@entity_field.manager",
+        "@config.factory",
+        "@rabbit_hole.behavior_settings_manager",
+      ]
+
+  sprintive_dilios_client.site_manager:
+    class: Drupal\sprintive_dilios_client\DiliosSiteManager
+    arguments:
+      [
+        "@config.factory",
+        "@module_handler",
+        "@entity_type.manager",
+        "@system.manager",
+        "@extension.list.profile",
+        "@rabbit_hole.behavior_settings_manager",
+        "@yoast_seo.field_manager",
+        "@http_client",
+        "@request_stack",
+        "@renderer",
+      ]
+
+  sprintive_dilios_client.simple_auth:
+    class: Drupal\sprintive_dilios_client\Access\SimpleAuth
+    arguments: ["@request_stack", "@config.factory"]
+    tags:
+      - { name: access_check, applies_to: _dilios__simple_auth }
+  logger.dilios:
+    class: Drupal\sprintive_dilios_client\Logger\DiliosLogger
+    arguments:
+      [
+        "@config.factory",
+        "@logger.log_message_parser",
+        "@request_stack",
+        "@current_user",
+        "@database",
+      ]
+    tags:
+      - { name: logger }
+      - { name: backend_overridable }
+  sprintive_dilios_client.page_cache_request_policy:
+    class: Drupal\sprintive_dilios_client\PageCache\RequestPolicy\DisallowDiliosToken
+    public: false
+    tags:
+      - { name: page_cache_request_policy }
+  logger.channel.sprintive_dilios_client:
+    parent: logger.channel_base
+    arguments: ["sprintive_dilios_client"]
+  sprintive_dilios_client.backup:
+    class: Drupal\sprintive_dilios_client\DiliosBackup
+    arguments:
+      [
+        "@sprintive_dilios_client.backup_generator",
+        "@sprintive_dilios_client.backup_timestamp",
+        "@sprintive_dilios_client.requester",
+        "@config.factory",
+      ]
+  sprintive_dilios_client.backup_timestamp:
+    class: Drupal\sprintive_dilios_client\DiliosBackupTimestamp
+    arguments: ["@keyvalue"]
+  sprintive_dilios_client.backup_generator:
+    class: Drupal\sprintive_dilios_client\DiliosBackupGenerator
+    arguments:
+      [
+        "@http_client",
+        "@sprintive_dilios_client.requester",
+        "@config.factory",
+        "@file_system",
+      ]
+  sprintive_dilios_client.requester:
+    class: Drupal\sprintive_dilios_client\DiliosRequester
+    arguments: ["@http_client", "@cache.default", "@config.factory"]

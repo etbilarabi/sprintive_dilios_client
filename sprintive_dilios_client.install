@@ -1,0 +1,65 @@
+<?php
+
+/**
+ * Implements hook_update_N().
+ */
+
+function sprintive_dilios_client_update_8002(&$sandbox) {
+  $config = \Drupal::configFactory()->getEditable('sprintive_dilios_client.settings');
+  $config->set('dilios.url', 'https://dilios.sprintive.com/api/v1/dilios/log?_format=json')
+    ->set('dilios.key', '5a8f78599d5d90ea7b19c204cf5e007b')
+    ->set('dilios.username', 'sprintive')
+    ->set('dilios.password', 'Sprintive2019')
+    ->save();
+}
+
+/**
+ * Create table 'dilios_log_messages'
+ */
+
+function sprintive_dilios_client_update_8003(&$sandbox) {
+  $schema = \Drupal::database()->schema();
+  $specs = [
+    'description' => 'This table stores messages temporarily untill the next cron to send them all in one request.',
+    'fields' => [
+      'id' => [
+        'description' => 'The id of this record',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'data' => [
+        'description' => 'The message of the record.',
+        'type' => 'blob',
+        'serialize' => TRUE,
+        'not null' => TRUE,
+      ],
+    ],
+    'primary key' => ['id'],
+  ];
+  $schema->createTable('dilios_log_messages', $specs);
+}
+
+/**
+ * Set the new dilios url.
+ */
+function sprintive_dilios_client_update_8005(&$sandbox) {
+  $config = \Drupal::configFactory()->getEditable('sprintive_dilios_client.settings');
+  $config->set('dilios.url', 'http://dilios.sprintive.dev/api/v1/dilios')->save();
+}
+
+/**
+ * Clean up key values.
+ */
+function sprintive_dilios_client_update_8006(&$sandbox) {
+  $col = \Drupal::keyValue('sprintive_dilios_client.backup');
+  $col->deleteAll();
+}
+
+/**
+ * Clean up the 'dilios_log_messages' records.
+ *
+ */
+function sprintive_dilios_client_update_8007() {
+  $truncate = \Drupal::database()->truncate('dilios_log_messages');
+  $truncate->execute();
+}

@@ -1,0 +1,5 @@
+services:
+  sprintive_dilios_client.drush_commands:
+    class: \Drupal\sprintive_dilios_client\Commands\BackupCommands
+    tags:
+      - { name: drush.command }

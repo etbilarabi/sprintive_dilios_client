@@ -1,0 +1,8 @@
+name: Sprintive Dilios Client
+type: module
+description: 'A module that exposes information about the website as APIs, to help Sprintive Service Deliver do their work'
+core_version_requirement: ^8 || ^9
+package: Custom
+dependencies:
+  - drupal:yoast_seo
+  - drupal:rabbit_hole

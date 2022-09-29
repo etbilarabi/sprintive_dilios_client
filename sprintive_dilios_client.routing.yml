@@ -1,0 +1,62 @@
+sprintive_dilios_client.settings:
+  path: "/admin/config/dilios"
+  defaults:
+    _form: '\Drupal\sprintive_dilios_client\Form\DiliosConfigForm'
+    _title: "Configure Dilios"
+  options:
+    _admin_route: TRUE
+  requirements:
+    _permission: "administer sprintive dilios"
+sprintive_dilios_client.entities:
+  path: "/api/v1/dilios/entities/{entity_type_id}"
+  defaults:
+    _controller: 'Drupal\sprintive_dilios_client\Controller\DiliosEntityController::getEntities'
+    _title: ""
+  methods: [GET]
+  requirements:
+    _dilios__simple_auth: "TRUE"
+
+sprintive_dilios_client.info:
+  path: "/api/v1/dilios/site/info"
+  defaults:
+    _controller: 'Drupal\sprintive_dilios_client\Controller\DiliosSiteController::getInfo'
+    _title: ""
+  methods: [GET]
+  requirements:
+    _dilios__simple_auth: "TRUE"
+
+sprintive_dilios_client.site.performance:
+  path: "/api/v1/dilios/site/performance"
+  defaults:
+    _controller: 'Drupal\sprintive_dilios_client\Controller\DiliosSiteController::getPerformance'
+    _title: ""
+  methods: [GET]
+  requirements:
+    _dilios__simple_auth: "TRUE"
+
+sprintive_dilios_client.site.seo:
+  path: "/api/v1/dilios/site/seo"
+  defaults:
+    _controller: 'Drupal\sprintive_dilios_client\Controller\DiliosSiteController::getSEO'
+    _title: ""
+  methods: [GET]
+  requirements:
+    _dilios__simple_auth: "TRUE"
+
+sprintive_dilios_client.site.security:
+  path: "/api/v1/dilios/site/security"
+  defaults:
+    _controller: 'Drupal\sprintive_dilios_client\Controller\DiliosSiteController::getSecurity'
+    _title: ""
+  methods: [GET]
+  requirements:
+    _dilios__simple_auth: "TRUE"
+
+sprintive_dilios_client.site.status_report:
+  path: "/api/v1/dilios/site/status-report"
+  defaults:
+    _controller: 'Drupal\sprintive_dilios_client\Controller\DiliosSiteController::getStatusReport'
+    _title: ""
+  methods: [GET]
+  requirements:
+    _dilios__simple_auth: "TRUE"
